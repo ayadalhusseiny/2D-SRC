@@ -4,24 +4,21 @@
 [![Jupyter Notebook](https://img.shields.io/badge/jupyter-notebook-orange.svg)](https://jupyter.org/)
 [![LaTeX REVTeX 4-2](https://img.shields.io/badge/LaTeX-REVTeX%204--2-green.svg)](https://journals.aps.org/revtex)
 [![Google Colab T4 GPU](https://img.shields.io/badge/Google%20Colab-T4%20GPU-yellow.svg)](https://colab.research.google.com/)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20777030.svg)](https://doi.org/10.5281/zenodo.20777030)
 
-This repository contains the numerical experiment notebooks and the compiled PDF manuscript for the paper **"Logarithmic Bond Dimension Scaling in 2D PEPS Contraction via Successive Randomized Compression"**. The repository is hosted on GitHub at [https://github.com/ayadalhusseiny/2D-SRC](https://github.com/ayadalhusseiny/2D-SRC).
+Code and LaTeX sources supporting **"Logarithmic Bond Dimension Scaling in 2D PEPS Contraction via Successive Randomized Compression"**. Check out the repository on GitHub: [https://github.com/ayadalhusseiny/2D-SRC](https://github.com/ayadalhusseiny/2D-SRC).
 
-We introduce **2D Successive Randomized Compression (2D-SRC)**, a randomized numerical linear algebra (RandNLA) algorithm for compressing the boundary Matrix Product States (MPS) in 2D Projected Entangled Pair States (PEPS) contractions.
-
----
-
-## 📖 Abstract
-
-The main computational bottleneck in contracting 2D tensor networks is the multiplicative growth of the bond dimension when using the Boundary MPS method. To address this, we generalize the recently proposed Successive Randomized Compression (SRC) algorithm from 1D chain geometries to 2D networks, introducing the specialized **2D-SRC** algorithm. By replacing the standard, computationally expensive singular value decomposition (SVD) with a single-pass randomized QR projection, we reduce the per-site computational cost from $\mathcal{O}(mn^2)$ to $\mathcal{O}(mnk)$ with $k \ll n$. 
-
-We identify and resolve a critical boundary gauge-loss deficiency unique to 2D contractions via a novel **Boundary-Weight Preservation Scheme**. Furthermore, we establish rigorous error bounds for the sequential randomized projections using a matrix-valued Doob martingale and the Matrix Freedman inequality, proving that under the area law of entanglement, the target bond dimension scales only logarithmically with the lattice size: $\bar{\chi} \sim (\xi/2)\log N$. 
-
-We benchmark the 2D-SRC algorithm on the 2D Transverse Field Ising Model (TFIM) on a $6\times 6$ lattice, demonstrating a $2.5\times$ speedup over the deterministic SVD baseline with a relative energy error below $4\%$, and a $10\times$ speed advantage over industry-standard tensor network libraries for intermediate bond dimensions.
+2D Successive Randomized Compression (2D-SRC) is a randomized numerical linear algebra (RandNLA) algorithm for compressing boundary Matrix Product States (MPS) in 2D Projected Entangled Pair States (PEPS) contractions.
 
 ---
 
-## 📂 Repository Structure
+## Abstract
+
+Exponential growth of virtual bond dimensions during row-by-row boundary contraction constrains the simulation of 2D quantum lattices via PEPS. The 2D Successive Randomized Compression (2D-SRC) algorithm resolves this computational bottleneck. Replacing the standard, computationally expensive singular value decomposition (SVD) with a single-pass randomized QR projection reduces the per-site complexity from $\mathcal{O}(mn^2)$ to $\mathcal{O}(mnk)$ for sketching dimension $k < n$. However, boundary sweeps on 2D lattices suffer from a unique gauge-loss deficiency: discarding the gauge remainder at the final site corrupts the partition function weight and freezes magnetization observables at unphysical saturation values. The Boundary-Weight Preservation Scheme prevents this calibration loss. Retaining the uncompressed core preserves the partition function weight at zero computational cost. Martingale tail bounds govern error accumulation. A matrix-valued Doob construction and the Matrix Freedman inequality yield a global error bound. This bound restricts the target bond dimension to logarithmic scaling with lattice size: $\bar{\chi} \sim (\xi/2)\log N$, where $\xi$ is the physical correlation length. Benchmarks on the 2D Transverse Field Ising Model (TFIM) verify these predictions. The simulation reproduces the ferromagnetic-to-paramagnetic transition. It runs $2.5\times$ faster than the deterministic SVD baseline, keeping the relative energy error at $3.9\%$ at $h/J=4.0$. At intermediate bond dimensions, the dense 2D-SRC implementation runs $10\times$ faster than standard tensor network libraries.
+
+---
+
+## Repository Structure
 
 ```directory
 ├── 2D-SRC_Experiments.ipynb          # Main simulation notebook (Ising model phase transition comparison)
@@ -33,65 +30,52 @@ We benchmark the 2D-SRC algorithm on the 2D Transverse Field Ising Model (TFIM) 
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-To run the simulation notebooks locally, you need a Python environment with the following dependencies installed:
+To run the simulation notebooks locally, you need a Python environment with the following dependencies:
 
 ```bash
 pip install numpy scipy matplotlib h5py
 ```
 
-To run the TeNPy benchmark notebook, you also need to install the `physics-tenpy` package:
+To run the TeNPy benchmark notebook, you also need the `physics-tenpy` package:
 
 ```bash
 pip install physics-tenpy
 ```
 
-*Note: All notebooks are fully self-contained and equipped with setup cells to run directly in Google Colab (with optional GPU acceleration for matrix multiplications).*
+All notebooks are self-contained and run directly in Google Colab, with optional GPU acceleration for matrix multiplications.
 
 ---
 
-## 📓 Jupyter Notebooks Detailed Overview
+## Jupyter Notebooks Overview
 
-### 1. Main Experiments Notebook: `2D-SRC_Experiments.ipynb`
-*   **Purpose**: Simulates the 2D Transverse Field Ising Model (TFIM) on a $6\times 6$ square lattice under Open Boundary Conditions (OBC) using Imaginary Time Evolution (ITE) via the Simple Update scheme.
-*   **Features**:
-    *   Implements both the **Deterministic SVD** and the **Randomized 2D-SRC** boundary contraction sweep.
-    *   Compares physical observables: ground-state energy per site $E/N$, longitudinal magnetization $\langle Z \rangle$, and transverse magnetization $\langle X \rangle$ for a transverse field scan $h \in [0.0, 4.0]$.
-    *   Demonstrates the **Boundary-Weight Preservation Scheme** which prevents unphysical magnetization saturation.
-    *   Generates `comparison_plots.png` showing the phase transition and a $2.5\times$ computational speedup.
+### Main Experiments: `2D-SRC_Experiments.ipynb`
+The main simulation notebook, `2D-SRC_Experiments.ipynb`, models the 2D Transverse Field Ising Model (TFIM) on a $6\times 6$ square lattice under Open Boundary Conditions. Using Imaginary Time Evolution (ITE) via the Simple Update scheme, it compares physical observables—ground-state energy, longitudinal magnetization, and transverse magnetization—across a transverse field scan $h \in [0.0, 4.0]$ for both deterministic SVD and randomized 2D-SRC. It demonstrates how the Boundary-Weight Preservation Scheme resolves the unphysical magnetization saturation anomaly and generates the final comparison plots showcasing the $2.5\times$ speedup.
 
-### 2. Extended Experiments Notebook: `2D-SRC_Extended_Experiments.ipynb`
-*   **Purpose**: Validates the numerical convergence and scaling behavior of the 2D-SRC algorithm.
-*   **Features**:
-    *   Sweeps the boundary bond dimension $\bar{\chi} \in [8, 24]$ to show the exponential decay of the ground-state energy error.
-    *   Demonstrates that the unphysical magnetization overshoot ($\langle Z \rangle > 1.0$) is corrected as $\bar{\chi} \ge 16$.
-    *   Measures execution time scaling over different lattice sizes $L \times L$ for $L \in \{4, 6, 8, 10\}$, verifying the scaling advantage of the randomized scheme.
-    *   Generates `extended_plots.png`.
+### Convergence and Scaling: `2D-SRC_Extended_Experiments.ipynb`
+The convergence and scaling notebook, `2D-SRC_Extended_Experiments.ipynb`, verifies numerical stability. By sweeping the boundary bond dimension $\bar{\chi} \in [8, 24]$, it maps the exponential decay of the ground-state energy error. It shows that the unphysical magnetization overshoot disappears when $\bar{\chi} \ge 16$. The notebook also measures execution times over lattice sizes up to $10 \times 10$ to verify the scaling scaling advantage of the randomized scheme.
 
-### 3. TeNPy Benchmark Notebook: `2D-SRC_vs_TeNPy_Benchmark.ipynb`
-*   **Purpose**: Compares our dense randomized compression against the optimized industry-standard **TeNPy** package.
-*   **Features**:
-    *   Sets up a controlled 1D MPO-MPS multiplication and compression benchmark (representing the core subroutine in 2D sweeps).
-    *   Evaluates relative truncation error and execution time across bond dimensions $\bar{\chi} \in [8, 24]$.
-    *   Shows that our Python/NumPy implementation of 2D-SRC tracks SVD truncation errors while achieving a $10\times$ execution speed advantage due to low class-overhead in the intermediate bond dimension regime.
-    *   Generates `tenpy_comparison_plots.png`.
+### TeNPy Comparison: `2D-SRC_vs_TeNPy_Benchmark.ipynb`
+The third notebook, `2D-SRC_vs_TeNPy_Benchmark.ipynb`, compares our dense randomized compression against the optimized TeNPy package. By isolating a controlled 1D MPO-MPS compression subroutine, it evaluates truncation error and speed across bond dimensions $\bar{\chi} \in [8, 24]$. Directly projecting on dense NumPy arrays is $10\times$ faster than TeNPy's object-oriented structure in the intermediate bond dimension regime.
 
 ---
 
+## Citation
 
-
-## ✒️ Citation
-
-If you use this code or refer to the manuscript in your research, please cite:
+To cite this work, use the following BibTeX entries:
 
 ```bibtex
-@article{alhusseiny2026logarithmic,
-  title={Logarithmic Bond Dimension Scaling in 2D PEPS Contraction via Successive Randomized Compression},
+@software{alhusseiny2026zenodo,
   author={Alhusseiny, Ayad},
-  journal={arXiv preprint arXiv:XXXX.XXXXX},
-  year={2026}
+  title={Logarithmic Bond Dimension Scaling in 2D PEPS Contraction via Successive Randomized Compression},
+  month={jul},
+  year={2026},
+  publisher={Zenodo},
+  version={v1.0},
+  doi={10.5281/zenodo.20777030},
+  url={https://doi.org/10.5281/zenodo.20777030}
 }
 ```
